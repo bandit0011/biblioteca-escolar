@@ -1,0 +1,50 @@
+import { Prestamo } from "../models/Prestamo.js";
+import { Libro } from "../models/Libro.js";
+
+export const listarPrestamos = async (req, res) => {
+  try {
+    const prestamos = await Prestamo.findAll({ include: Libro });
+    res.json(prestamos);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener préstamos", error });
+  }
+};
+
+export const crearPrestamo = async (req, res) => {
+  try {
+    const { id_usuario, id_libro, fecha_devolucion } = req.body;
+
+    const libro = await Libro.findByPk(id_libro);
+    if (!libro || libro.cantidad_disponible <= 0)
+      return res.status(400).json({ mensaje: "Libro no disponible" });
+
+    const nuevo = await Prestamo.create({
+      id_usuario,
+      id_libro,
+      fecha_devolucion,
+      estado: "pendiente",
+    });
+
+    await libro.update({ cantidad_disponible: libro.cantidad_disponible - 1 });
+
+    res.status(201).json({ mensaje: "Préstamo registrado", prestamo: nuevo });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al crear préstamo", error });
+  }
+};
+
+export const devolverLibro = async (req, res) => {
+  try {
+    const prestamo = await Prestamo.findByPk(req.params.id, { include: Libro });
+    if (!prestamo) return res.status(404).json({ mensaje: "Préstamo no encontrado" });
+
+    await prestamo.update({ estado: "devuelto" });
+
+    const libro = prestamo.Libro;
+    await libro.update({ cantidad_disponible: libro.cantidad_disponible + 1 });
+
+    res.json({ mensaje: "Libro devuelto correctamente", prestamo });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al devolver libro", error });
+  }
+};
