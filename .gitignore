@@ -1,0 +1,11 @@
+# Node
+node_modules/
+.env
+dist/
+.vscode/
+.DS_Store
+
+# Build outputs
+/build
+/frontend/node_modules
+/backend/node_modules
