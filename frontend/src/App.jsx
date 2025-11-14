@@ -6,7 +6,7 @@ import LibroListPage from "./pages/LibroListPage";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./pages/AdminDashboard";
-import EditarLibroPage from "./pages/EditarLibroPage";
+import LibroFormPage from "./pages/LibroFormPage"; // AÑADIDO
 
 export default function App() {
   return (
@@ -25,11 +25,20 @@ export default function App() {
             </PrivateRoute>
           }
         />
+        {/* NUEVA RUTA para la creación de libros, usando LibroFormPage */}
+        <Route
+          path="/admin/libros/crear"
+          element={
+            <PrivateRoute>
+              <LibroFormPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/admin/libros/editar/:id"
           element={
             <PrivateRoute>
-              <EditarLibroPage />
+              <LibroFormPage /> {/* CORREGIDO: Se usa LibroFormPage para la edición */}
             </PrivateRoute>
           }
         />

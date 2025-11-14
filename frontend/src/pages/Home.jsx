@@ -24,7 +24,7 @@ export default function Home() {
           <div key={libro.id_libro} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
             <h3>{libro.titulo}</h3>
             <p><b>Autor:</b> {libro.autor}</p>
-            <p><b>Categoría:</b> {libro.Categorium?.nombre}</p>
+            <p><b>Categoría:</b> {libro.Categoria?.nombre}</p> {/* CORREGIDO: Cambiado de Categorium a Categoria */}
             <p><b>Año:</b> {libro.anio_publicacion}</p>
           </div>
         ))

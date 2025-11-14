@@ -16,10 +16,10 @@ export default function AdminDashboard() {
     cargarLibros();
   }, []);
 
-  return (
+ return (
     <div style={{ padding: "20px" }}>
       <h1>Panel de Administración</h1>
-      <Link to="/admin/libros/nuevo">➕ Agregar Libro</Link>
+      <Link to="/admin/libros/crear">➕ Agregar Libro</Link> {/* CORREGIDO: Ruta actualizada */}
 
       <h2 style={{ marginTop: "20px" }}>Lista de Libros</h2>
 
@@ -31,6 +31,7 @@ export default function AdminDashboard() {
           {" | "}
           <button
             onClick={async () => {
+              if (!window.confirm("¿Eliminar libro?")) return; // AÑADIDO: Confirmación de usuario
               await api.delete(`/libros/${l.id_libro}`);
               cargarLibros();
             }}

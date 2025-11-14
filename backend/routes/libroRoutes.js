@@ -1,12 +1,13 @@
 import express from "express";
-import { obtenerLibros, crearLibro, actualizarLibro, eliminarLibro } from "../controllers/libroController.js";
+// CORREGIDO: Se importa la función obtenerLibroPorId que faltaba en el import
+import { obtenerLibros, crearLibro, actualizarLibro, eliminarLibro, obtenerLibroPorId } from "../controllers/libroController.js";
 import { verificarToken, soloBibliotecario } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Rutas públicas (lectura)
 router.get("/", obtenerLibros);
-router.get("/:id", obtenerLibros); // opcional: obtener un libro específico
+router.get("/:id", obtenerLibroPorId); // CORREGIDO: Usa obtenerLibroPorId
 
 // Rutas protegidas (solo administradores)
 router.post("/", verificarToken, soloBibliotecario, crearLibro);

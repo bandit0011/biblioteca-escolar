@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { conectarDB } from "./config/db.js";
 
-import usuarioRoutes from "./routes/usuarioRoutes.js";
+// import usuarioRoutes from "./routes/usuarioRoutes.js"; // <-- Eliminado/Comentado
 import libroRoutes from "./routes/libroRoutes.js";
 import categoriaRoutes from "./routes/categoriaRoutes.js";
 import prestamoRoutes from "./routes/prestamoRoutes.js";
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.use("/api/usuarios", usuarioRoutes);
+// app.use("/api/usuarios", usuarioRoutes); // <-- Eliminado/Comentado
 app.use("/api/libros", libroRoutes);
 app.use("/api/categorias", categoriaRoutes);
 app.use("/api/prestamos", prestamoRoutes);

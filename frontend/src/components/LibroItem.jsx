@@ -1,12 +1,11 @@
-import api from "../services/api";
-
-export default function LibroList({ libros, onUpdate }) {
+import api from "../api/axios"; // CORREGIDO: ruta de importación del API
+export default function LibroList({ libros, onUpdate }) { 
   const eliminarLibro = async (id) => {
-  if (!window.confirm("¿Eliminar libro?")) return;
-  try {
-    await api.delete(`/libros/${id}`);
-    setLibros(libros.filter(libro => libro.id_libro !== id));
-  } catch (error) {
+    if (!window.confirm("¿Eliminar libro?")) return;
+    try {
+      await api.delete(`/libros/${id}`);
+      onUpdate(); // CORREGIDO: Llama a onUpdate para recargar la lista en el componente padre
+    } catch (error) {
     console.error("Error eliminando libro:", error);
   }
   };

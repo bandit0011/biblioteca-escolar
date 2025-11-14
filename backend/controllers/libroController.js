@@ -6,6 +6,7 @@ export const obtenerLibros = async (req, res) => {
     const libros = await Libro.findAll({
       include: {
         model: Categoria,
+        as: "Categoria", // AÑADIDO: Alias consistente
         attributes: ["id_categoria", "nombre"],
       },
     });
@@ -31,7 +32,7 @@ export const crearLibro = async (req, res) => {
 export const obtenerLibroPorId = async (req, res) => {
   try {
     const libro = await Libro.findByPk(req.params.id, {
-      include: { model: Categoria },
+      include: { model: Categoria, as: "Categoria" }, // AÑADIDO: Alias consistente
     });
     if (!libro) return res.status(404).json({ error: "Libro no encontrado" });
     res.json(libro);
