@@ -1,35 +1,39 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LibroListPage from "./pages/LibroList";
-import LibroFormPage from "./pages/LibroForm";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
+import LibroListPage from "./pages/LibroListPage";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+import EditarLibroPage from "./pages/EditarLibroPage";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/" />} />
-        <Route path="/login" element={<Login />} />
+      <Navbar />
 
-        {/* Panel de administración protegido */}
-        <Route path="/admin/libros" element={
-          <PrivateRoute>
-            <LibroListPage admin={true} />
-          </PrivateRoute>
-        } />
-        <Route path="/admin/libros/nuevo" element={
-          <PrivateRoute>
-            <LibroFormPage />
-          </PrivateRoute>
-        } />
-        <Route path="/admin/libros/editar/:id" element={
-          <PrivateRoute>
-            <LibroFormPage />
-          </PrivateRoute>
-        } />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/libros" element={<LibroListPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/libros/editar/:id"
+          element={
+            <PrivateRoute>
+              <EditarLibroPage />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

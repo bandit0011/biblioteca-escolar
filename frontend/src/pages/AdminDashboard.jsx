@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   return (
     <div style={{ padding: "20px" }}>
       <h1>Panel de Administración</h1>
-      <Link to="/admin/libros/new">➕ Agregar Libro</Link>
+      <Link to="/admin/libros/nuevo">➕ Agregar Libro</Link>
 
       <h2 style={{ marginTop: "20px" }}>Lista de Libros</h2>
 
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
         <div key={l.id_libro} style={{ border: "1px solid #ccc", margin: 10, padding: 10 }}>
           <h3>{l.titulo}</h3>
           <p>{l.autor}</p>
-          <Link to={`/admin/libros/edit/${l.id_libro}`}>✏ Editar</Link>
+          <Link to={`/admin/libros/editar/${l.id_libro}`}>✏ Editar</Link>
           {" | "}
           <button
             onClick={async () => {
