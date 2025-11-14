@@ -1,0 +1,42 @@
+.navbar {
+  display: flex;
+  padding: 15px 30px; /* Un poco más de espacio */
+  background: #333;
+  color: white;
+  justify-content: space-between;
+  align-items: center; /* Alinea verticalmente los items */
+}
+
+.navbar-links a {
+  color: white;
+  margin-right: 20px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar-links a:hover {
+  color: #646cff;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espacio entre el "Hola" y el botón */
+}
+
+.navbar-user span {
+  font-weight: bold;
+}
+
+.navbar-user button {
+  padding: 5px 10px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.navbar-user button:hover {
+  background: #cc0000;
+}

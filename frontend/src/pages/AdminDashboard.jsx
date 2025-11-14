@@ -20,7 +20,10 @@ export default function AdminDashboard() {
     <div style={{ padding: "20px" }}>
       <h1>Panel de Administración</h1>
       <Link to="/admin/libros/crear">➕ Agregar Libro</Link> {/* CORREGIDO: Ruta actualizada */}
-
+      <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginBottom: '20px', fontSize: '1.1em' }}>
+        <Link to="/admin/libros/crear">➕ Agregar Libro</Link>
+        <Link to="/admin/categorias">📚 Gestionar Categorías</Link>
+      </div>
       <h2 style={{ marginTop: "20px" }}>Lista de Libros</h2>
 
       {libros.map((l) => (
