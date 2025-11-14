@@ -42,13 +42,29 @@ export default function PerfilPage() {
     if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
 
     try {
-      await api.put(`/prestamos/${id_prestamo}/devolver`);
+      // 1. Capturamos la respuesta de la API (que contiene el préstamo actualizado)
+      const res = await api.put(`/prestamos/${id_prestamo}/devolver`);
+      
+      // 2. Obtenemos el préstamo con el nuevo estado: "devuelto"
+      const prestamoActualizado = res.data.prestamo;
+
+      // 3. Actualizamos el estado local INMEDIATAMENTE
+      // Buscamos en la lista actual el préstamo que cambió y lo reemplazamos
+      setPrestamos(prestamosActuales => 
+        prestamosActuales.map(p => 
+          p.id_prestamo === id_prestamo ? prestamoActualizado : p
+        )
+      );
+      
       alert("Libro devuelto con éxito");
-      // Recargar la lista de préstamos para que se actualice el estado
-      cargarMisPrestamos();
+      
+      // 4. YA NO necesitamos esta línea, la UI se actualiza al instante
+      // cargarMisPrestamos(); 
+
     } catch (error) {
       console.error("Error al devolver el libro:", error);
-      alert("No se pudo devolver el libro.");
+      // Mostramos el mensaje de error del backend (ej. "Este libro ya fue devuelto")
+      alert(error.response?.data?.mensaje || "No se pudo devolver el libro.");
     }
   };
 
@@ -83,7 +99,7 @@ export default function PerfilPage() {
               <h3>{prestamo.Libro.titulo}</h3>
               <p><strong>Autor:</strong> {prestamo.Libro.autor}</p>
               <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
-              <p><strong>Estado:</strong> <span style={{ color: prestamo.estado === 'pendiente' ? 'orange' : 'green' }}>{prestamo.estado}</span></p>
+              <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
             </div>
             <div className="libro-card-admin">
                 <button 

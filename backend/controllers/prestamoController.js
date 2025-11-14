@@ -67,18 +67,16 @@ export const devolverLibro = async (req, res) => {
     if (!prestamo) return res.status(404).json({ mensaje: "Préstamo no encontrado" });
 
     // --- ¡ESTA ES LA VALIDACIÓN QUE FALTA! ---
-    // Si el préstamo ya está "devuelto", detenemos la ejecución.
+    // Si el préstamo ya está "devuelto", detenemos la ejecución y enviamos un error 400.
     if (prestamo.estado === "devuelto") {
       return res.status(400).json({ mensaje: "Este libro ya fue devuelto anteriormente." });
     }
     // --- FIN DE LA VALIDACIÓN ---
 
-    // Si llegamos aquí, el estado es "pendiente" (o "retrasado"), así que procedemos.
+    // Si llegamos aquí, el estado es "pendiente", así que procedemos.
     await prestamo.update({ estado: "devuelto" });
 
     const libro = prestamo.Libro;
-    
-    // (Añadimos un check por si el libro asociado fue borrado)
     if (libro) {
       await libro.update({ cantidad_disponible: libro.cantidad_disponible + 1 });
     }

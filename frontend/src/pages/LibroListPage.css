@@ -90,3 +90,18 @@
 .admin-boton-crear:hover {
   background-color: var(--color-primary-hover);
 }
+
+.status {
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+.status-pendiente {
+  background-color: #8a6500;
+  color: #ffe6a8;
+}
+.status-devuelto {
+  background-color: #006b21;
+  color: #a8ffc5;
+}
