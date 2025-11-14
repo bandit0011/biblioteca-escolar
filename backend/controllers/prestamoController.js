@@ -1,5 +1,4 @@
-import { Prestamo, Libro, Usuario } from "../models/asociaciones.js";
-
+import { Prestamo, Libro, Usuario, Categoria } from "../models/asociaciones.js";
 export const listarPrestamos = async (req, res) => {
   try {
     const prestamos = await Prestamo.findAll({ include: Libro });
