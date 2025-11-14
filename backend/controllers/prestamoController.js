@@ -10,6 +10,19 @@ export const listarPrestamos = async (req, res) => {
   }
 };
 
+export const obtenerMisPrestamos = async (req, res) => {
+  try {
+    // req.usuario.id viene del token (verificarToken)
+    const prestamos = await Prestamo.findAll({ 
+      where: { id_usuario: req.usuario.id },
+      include: Libro 
+    });
+    res.json(prestamos);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener mis préstamos", error });
+  }
+};
+
 export const crearPrestamo = async (req, res) => {
   try {
     const { id_usuario, id_libro, fecha_devolucion } = req.body;

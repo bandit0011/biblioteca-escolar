@@ -1,21 +1,21 @@
 .navbar {
   display: flex;
   padding: 15px 30px; /* Un poco más de espacio */
-  background: #333;
-  color: white;
+  background: var(--color-card-bg);
+  color: var(--color-text);
   justify-content: space-between;
   align-items: center; /* Alinea verticalmente los items */
 }
 
 .navbar-links a {
-  color: white;
+  color: var(--color-text);
   margin-right: 20px;
   text-decoration: none;
   font-weight: 500;
 }
 
 .navbar-links a:hover {
-  color: #646cff;
+  color: var(--color-primary);
 }
 
 .navbar-user {
@@ -30,13 +30,33 @@
 
 .navbar-user button {
   padding: 5px 10px;
-  background: #ff4444;
-  color: white;
+  background: var(--color-danger);
+  color: var(--color-text);
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .navbar-user button:hover {
-  background: #cc0000;
+  background: var(--color-danger-hover);
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 15px;
+  }
+
+  .navbar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .navbar-user {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

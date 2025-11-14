@@ -1,16 +1,47 @@
 :root {
+  /* Tema por defecto (oscuro) */
+  --color-bg: #242424;
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-card-bg: #2c2c2c;
+  --color-input-bg: #333;
+  --color-border: #555;
+  --color-primary: #646cff;
+  --color-primary-hover: #535bf2;
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tema Claro */
+body.light-mode {
+  --color-bg: #ffffff;
+  --color-text: #213547;
+  --color-card-bg: #f9f9f9;
+  --color-input-bg: #eee;
+  --color-border: #ccc;
+  --color-primary: #747bff;
+  --color-primary-hover: #535bf2;
+}
+
+/* Tema Alto Contraste */
+body.high-contrast-mode {
+  --color-bg: #000000;
+  --color-text: #ffffff;
+  --color-card-bg: #111;
+  --color-input-bg: #222;
+  --color-border: #ffffff;
+  --color-primary: #ffff00; /* Amarillo brillante */
+  --color-primary-hover: #ffee00;
 }
 
 a {

@@ -4,11 +4,14 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LibroListPage from "./pages/LibroListPage";
 import Login from "./pages/Login";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "./components/PrivateRoute"; // El NUEVO
+import AdminRoute from "./components/AdminRoute";
+import PerfilPage from "./pages/PerfilPage"; // Página que crearemos
 import AdminDashboard from "./pages/AdminDashboard";
 import LibroFormPage from "./pages/LibroFormPage";
 import './App.css'; // <-- Importa el CSS que acabamos de editar
 import CategoriaPage from "./pages/CategoriaPage";
+import RegistroPage from "./pages/RegistroPage";
 
 export default function App() {
   return (
@@ -22,36 +25,47 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/libros" element={<LibroListPage />} />
           <Route path="/login" element={<Login />} />
+        
           <Route
-            path="/admin"
+            path="/perfil"
             element={
-              <PrivateRoute>
-                <AdminDashboard />
+              <PrivateRoute> {/* <-- Usa el nuevo PrivateRoute */}
+                <PerfilPage />
               </PrivateRoute>
             }
           />
+
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute> {/* <-- Usa el nuevo AdminRoute */}
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
           <Route
             path="/admin/libros/crear"
             element={
-              <PrivateRoute>
+              <AdminRoute>
                 <LibroFormPage />
-              </PrivateRoute>
+              </AdminRoute>
             }
           />
           <Route
             path="/admin/libros/editar/:id"
             element={
-              <PrivateRoute>
+              <AdminRoute>
                 <LibroFormPage />
-              </PrivateRoute>
+              </AdminRoute>
             }
           />
           <Route
           path="/admin/categorias"
           element={
-            <PrivateRoute>
+            <AdminRoute>
               <CategoriaPage />
-            </PrivateRoute>
+            </AdminRoute>
           }
         />
         </Routes>

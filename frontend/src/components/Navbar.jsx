@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./Navbar.css"; // <-- 1. Importa el nuevo CSS
+import { useTheme } from "../context/ThemeContext"; // <-- 1. Importar hook
 
 export default function Navbar() {
   const [usuario, setUsuario] = useState(null);
@@ -28,6 +29,8 @@ export default function Navbar() {
 
   console.log("👀 Estado actual de usuario en Navbar:", usuario);
 
+  const { theme, setTheme } = useTheme(); // <-- 2. Usar el hook
+
   return (
     // 2. Usa las clases en lugar de style=
     <nav className="navbar">
@@ -41,6 +44,12 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-user">
+        <select value={theme} onChange={(e) => setTheme(e.target.value)} style={{background: 'var(--color-input-bg)', color: 'var(--color-text)', border: 'none', borderRadius: '5px', padding: '5px'}}>
+          <option value="system">Tema del Sistema</option>
+          <option value="dark">Oscuro</option>
+          <option value="light">Claro</option>
+          <option value="high-contrast">Alto Contraste</option>
+        </select>
         {!usuario && (
           <Link to="/login">Iniciar sesión</Link>
         )}

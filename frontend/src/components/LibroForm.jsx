@@ -7,6 +7,7 @@ export default function LibroForm({ libroInicial = {}, categorias = [], onSubmit
     autor: "",
     anio_publicacion: "",
     categoria_id: "",
+    imagen_url: "", // <-- AÑADIR ESTADO INICIAL
     cantidad_total: 1,
     cantidad_disponible: 1,
   });
@@ -26,6 +27,7 @@ export default function LibroForm({ libroInicial = {}, categorias = [], onSubmit
         // para que los inputs controlados funcionen bien.
         anio_publicacion: libroInicial.anio_publicacion ?? "",
         categoria_id: libroInicial.categoria_id ?? "",
+        imagen_url: libroInicial.imagen_url ?? "",
       });
     }
   }, [libroInicial]); // <-- Dependencia: se ejecuta solo si 'libroInicial' cambia
@@ -69,6 +71,17 @@ export default function LibroForm({ libroInicial = {}, categorias = [], onSubmit
           value={libro.autor || ''}
           onChange={handleChange}
           required
+        />
+      </div>
+      
+      <div>
+        <label>URL de la Portada (Imagen):</label>
+        <input
+          type="text"
+          name="imagen_url"
+          value={libro.imagen_url || ''}
+          onChange={handleChange}
+          placeholder="https://ejemplo.com/portada.jpg"
         />
       </div>
 

@@ -1,48 +1,26 @@
-import { useEffect, useState } from "react";
-import api from "../api/axios";
 import { Link } from "react-router-dom";
+// 1. Importa el componente de la lista de libros
+import LibroListPage from "./LibroListPage";
 
 export default function AdminDashboard() {
-  const [libros, setLibros] = useState([]);
+  // 2. NO hay useState, useEffect, ni cargarLibros aquí.
+  // ¡Esto soluciona el error "libros is not defined"!
 
-  const cargarLibros = () => {
-    api
-      .get("/libros")
-      .then((res) => setLibros(res.data))
-      .catch(() => alert("Error cargando libros"));
-  };
-
-  useEffect(() => {
-    cargarLibros();
-  }, []);
-
- return (
-    <div style={{ padding: "20px" }}>
+  return (
+    <div>
       <h1>Panel de Administración</h1>
-      <Link to="/admin/libros/crear">➕ Agregar Libro</Link> {/* CORREGIDO: Ruta actualizada */}
+      
+      {/* 3. Enlaces de navegación del Admin */}
       <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginBottom: '20px', fontSize: '1.1em' }}>
-        <Link to="/admin/libros/crear">➕ Agregar Libro</Link>
-        <Link to="/admin/categorias">📚 Gestionar Categorías</Link>
+        {/* Dejamos solo un enlace para "Agregar Libro" */}
+        <Link to="/admin/libros/crear" className="admin-boton-crear">➕ Agregar Libro</Link>
+        <Link to="/admin/categorias" className="admin-boton-crear">📚 Gestionar Categorías</Link>
       </div>
-      <h2 style={{ marginTop: "20px" }}>Lista de Libros</h2>
 
-      {libros.map((l) => (
-        <div key={l.id_libro} style={{ border: "1px solid #ccc", margin: 10, padding: 10 }}>
-          <h3>{l.titulo}</h3>
-          <p>{l.autor}</p>
-          <Link to={`/admin/libros/editar/${l.id_libro}`}>✏ Editar</Link>
-          {" | "}
-          <button
-            onClick={async () => {
-              if (!window.confirm("¿Eliminar libro?")) return; // AÑADIDO: Confirmación de usuario
-              await api.delete(`/libros/${l.id_libro}`);
-              cargarLibros();
-            }}
-          >
-            🗑 Eliminar
-          </button>
-        </div>
-      ))}
+      {/* 4. Renderizamos el componente que maneja su propia lógica de libros */}
+      <LibroListPage admin={true} />
+      
+      {/* 5. Eliminamos todo el bloque {libros.map(...)} de aquí */}
     </div>
   );
 }

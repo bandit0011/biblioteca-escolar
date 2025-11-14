@@ -1,0 +1,92 @@
+.libros-grid {
+  display: grid;
+  /* Crea columnas responsivas:
+     - 300px como mínimo
+     - 1fr (fracción) para que se repartan el espacio
+     - 'auto-fit' crea tantas columnas como quepan */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.libro-card {
+  list-style: none;
+  background-color: var(--color-card-bg); /* Variable */  
+  border-radius: 8px;
+  overflow: hidden; /* Para que la imagen respete los bordes */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* Para alinear el contenido verticalmente */
+  flex-direction: column;
+}
+
+.libro-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.libro-card-imagen {
+  width: 100%;
+  height: 400px; /* Altura fija para la imagen */
+  object-fit: cover; /* Mantiene la proporción y corta si es necesario */
+  border-bottom: 1px solid var(--color-border);
+}
+
+.libro-card-info {
+  padding: 1.5rem;
+  flex-grow: 1; /* Hace que este div ocupe el espacio sobrante */
+}
+
+.libro-card-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: var(--color-text);
+}
+
+.libro-card-info p {
+  margin: 0.25rem 0;
+  color: var(--color-text-secondary);
+  font-size: 0.95em;
+}
+
+.libro-card-info strong {
+  color: var(--color-text);
+}
+
+.libro-card-admin {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  gap: 10px;
+}
+
+.libro-card-admin a {
+  text-decoration: none;
+  padding: 8px 12px;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border-radius: 5px;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+.libro-card-admin a:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Estilo para el botón de "Agregar Libro" en la parte superior */
+.admin-boton-crear {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 15px;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border-radius: 5px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: background-color 0.2s;
+}
+
+.admin-boton-crear:hover {
+  background-color: var(--color-primary-hover);
+}
