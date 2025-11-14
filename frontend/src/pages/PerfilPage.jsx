@@ -11,6 +11,19 @@ export default function PerfilPage() {
   // Obtenemos al usuario de localStorage
   const usuario = JSON.parse(localStorage.getItem("usuario"));
 
+  const cargarMisPrestamos = () => { // 1. Mover la carga a su propia función
+    api.get("/prestamos/mis-prestamos")
+      .then(res => {
+        setPrestamos(res.data);
+      })
+      .catch(err => {
+        console.error("Error cargando mis préstamos:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     // Pedimos a la API la ruta que acabamos de crear
     api.get("/prestamos/mis-prestamos")
@@ -24,6 +37,20 @@ export default function PerfilPage() {
         setLoading(false);
       });
   }, []); // Se ejecuta solo una vez
+
+  const handleDevolver = async (id_prestamo) => {
+    if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
+
+    try {
+      await api.put(`/prestamos/${id_prestamo}/devolver`);
+      alert("Libro devuelto con éxito");
+      // Recargar la lista de préstamos para que se actualice el estado
+      cargarMisPrestamos();
+    } catch (error) {
+      console.error("Error al devolver el libro:", error);
+      alert("No se pudo devolver el libro.");
+    }
+  };
 
   return (
     <div>
@@ -58,6 +85,20 @@ export default function PerfilPage() {
               <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
               <p><strong>Estado:</strong> <span style={{ color: prestamo.estado === 'pendiente' ? 'orange' : 'green' }}>{prestamo.estado}</span></p>
             </div>
+            <div className="libro-card-admin">
+                <button 
+                  onClick={() => handleDevolver(prestamo.id_prestamo)}
+                  style={{
+                    backgroundColor: 'var(--color-danger)', 
+                    color: 'white', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    width: '100%'
+                  }}
+                >
+                  Devolver Libro
+                </button>
+              </div>
           </li>
         ))}
       </div>

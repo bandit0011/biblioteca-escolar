@@ -35,6 +35,8 @@ export default function App() {
             }
           />
 
+          <Route path="/registro" element={<RegistroPage />} />
+
           <Route
             path="/admin"
             element={

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "./Navbar.css"; // <-- 1. Importa el nuevo CSS
-import { useTheme } from "../context/ThemeContext"; // <-- 1. Importar hook
+import "./Navbar.css";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
   const [usuario, setUsuario] = useState(null);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const cargarUsuario = () => {
@@ -24,19 +25,20 @@ export default function Navbar() {
     localStorage.removeItem("rol");
     setUsuario(null);
     window.dispatchEvent(new Event("storage"));
-    window.location.href = "/login";
+    window.location.href = "/login"; // Redirige a login al cerrar sesión
   };
 
-  console.log("👀 Estado actual de usuario en Navbar:", usuario);
-
-  const { theme, setTheme } = useTheme(); // <-- 2. Usar el hook
-
   return (
-    // 2. Usa las clases en lugar de style=
     <nav className="navbar">
       <div className="navbar-links">
         <Link to="/">Inicio</Link>
         <Link to="/libros">Libros</Link>
+
+        {/* --- ESTE ES EL ENLACE QUE PEDISTE --- */}
+        {usuario && (
+          <Link to="/perfil">Mi Perfil</Link>
+        )}
+        {/* --- FIN DEL BLOQUE AÑADIDO --- */}
 
         {usuario?.rol === "admin" && (
           <Link to="/admin">Admin</Link>
@@ -50,8 +52,16 @@ export default function Navbar() {
           <option value="light">Claro</option>
           <option value="high-contrast">Alto Contraste</option>
         </select>
+        
         {!usuario && (
-          <Link to="/login">Iniciar sesión</Link>
+          <>
+            <Link to="/registro" style={{ color: "white", textDecoration: 'none' }}>
+              Registrarse
+            </Link>
+            <Link to="/login" style={{ color: "white", textDecoration: 'none' }}>
+              Iniciar sesión
+            </Link>
+          </>
         )}
 
         {usuario && (

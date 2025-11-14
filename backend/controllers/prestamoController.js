@@ -25,16 +25,24 @@ export const obtenerMisPrestamos = async (req, res) => {
 
 export const crearPrestamo = async (req, res) => {
   try {
-    const { id_usuario, id_libro, fecha_devolucion } = req.body;
+    // ---- ESTAS SON LAS LÍNEAS CORREGIDAS ----
+    
+    // 1. Obtenemos el ID del usuario desde el token (inyectado por verificarToken)
+    const id_usuario = req.usuario.id;
+    
+    // 2. Obtenemos el resto de la información del body
+    const { id_libro, fecha_devolucion } = req.body;
+    
+    // ---- FIN DE LA CORRECCIÓN ----
 
     const libro = await Libro.findByPk(id_libro);
     if (!libro || libro.cantidad_disponible <= 0)
       return res.status(400).json({ mensaje: "Libro no disponible" });
 
     const nuevo = await Prestamo.create({
-      id_usuario,
-      id_libro,
-      fecha_devolucion,
+      id_usuario: id_usuario, // <-- Ahora usamos el ID del token
+      id_libro: id_libro,
+      fecha_devolucion: fecha_devolucion || null, // Asignamos null si no viene
       estado: "pendiente",
     });
 

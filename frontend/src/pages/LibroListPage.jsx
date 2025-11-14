@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import api from "../api/axios";
 import "./LibroListPage.css"; // <-- 1. Importar el nuevo CSS
+import { Link, useNavigate } from "react-router-dom"; // 1. Importar useNavigate
 
 export default function LibroListPage({ admin = false }) {
   const [libros, setLibros] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // 2. Inicializar navigate
+
+  const usuarioLogueado = !!localStorage.getItem("token");
 
   useEffect(() => {
     fetchLibros();
@@ -23,6 +26,20 @@ export default function LibroListPage({ admin = false }) {
   };
 
   if (loading) return <p>Cargando libros...</p>;
+
+  const handlePedirPrestamo = async (id_libro) => {
+    if (!window.confirm("¿Seguro que deseas pedir este libro?")) return;
+
+    try {
+      // (Opcional: podrías añadir un input para la fecha de devolución)
+      await api.post("/prestamos", { id_libro });
+      alert("¡Libro solicitado con éxito!");
+      navigate("/perfil"); // Redirige al perfil para ver el préstamo
+    } catch (error) {
+      console.error("Error al pedir préstamo:", error);
+      alert(error.response?.data?.mensaje || "No se pudo solicitar el libro.");
+    }
+  };
 
   return (
     <div>
@@ -46,7 +63,29 @@ export default function LibroListPage({ admin = false }) {
               alt={`Portada de ${libro.titulo}`} 
               className="libro-card-imagen"
             />
-            
+            <div className="libro-card-admin">
+              {admin && (
+                <Link to={`/admin/libros/editar/${libro.id_libro}`}>
+                  Editar
+                </Link>
+              )}
+              
+              {/* Si NO es admin Y está logueado */}
+              {!admin && usuarioLogueado && (
+                <button 
+                  onClick={() => handlePedirPrestamo(libro.id_libro)}
+                  disabled={libro.cantidad_disponible === 0}
+                  style={{
+                    backgroundColor: 'var(--color-primary)', 
+                    color: 'white', 
+                    border: 'none', 
+                    cursor: 'pointer'
+                  }}
+                >
+                  {libro.cantidad_disponible > 0 ? "Pedir Prestado" : "Agotado"}
+                </button>
+              )}
+            </div>
             <div className="libro-card-info">
               <h3>{libro.titulo}</h3>
               <p><strong>Autor:</strong> {libro.autor}</p>

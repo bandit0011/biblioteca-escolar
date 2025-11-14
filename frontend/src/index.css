@@ -1,5 +1,13 @@
+/* PASO 1: Define las variables de color en :root 
+  (este será tu tema oscuro por defecto)
+*/
 :root {
-  /* Tema por defecto (oscuro) */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+
+  /* Variables del Tema Oscuro (Default) */
   --color-bg: #242424;
   --color-text: rgba(255, 255, 255, 0.87);
   --color-card-bg: #2c2c2c;
@@ -7,14 +15,8 @@
   --color-border: #555;
   --color-primary: #646cff;
   --color-primary-hover: #535bf2;
-
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  --color-danger: #ff4444;
+  --color-danger-hover: #cc0000;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,7 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tema Claro */
+/* PASO 2: Define los otros temas.
+  ThemeContext.jsx añade estas clases al <body>
+*/
 body.light-mode {
   --color-bg: #ffffff;
   --color-text: #213547;
@@ -31,9 +35,10 @@ body.light-mode {
   --color-border: #ccc;
   --color-primary: #747bff;
   --color-primary-hover: #535bf2;
+  --color-danger: #d93030;
+  --color-danger-hover: #a31f1f;
 }
 
-/* Tema Alto Contraste */
 body.high-contrast-mode {
   --color-bg: #000000;
   --color-text: #ffffff;
@@ -42,21 +47,32 @@ body.high-contrast-mode {
   --color-border: #ffffff;
   --color-primary: #ffff00; /* Amarillo brillante */
   --color-primary-hover: #ffee00;
+  --color-danger: #ff00ff; /* Magenta brillante */
+  --color-danger-hover: #e600e6;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* PASO 3: Aplica las variables al <body>
+*/
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  
+  /* Aplica las variables de color */
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  
+  /* Transición suave entre temas */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color-primary); /* Usa la variable */
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--color-primary-hover); /* Usa la variable */
 }
 
 h1 {
@@ -71,27 +87,19 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /* (Este color es genérico, pero puedes cambiarlo a var(--color-card-bg)) */
+  background-color: #1a1a1a; 
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--color-primary); /* Usa la variable */
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+/* PASO 4: ELIMINASTE el media query @media (prefers-color-scheme: light)
+  ¡Perfecto! Ya no es necesario.
+*/
