@@ -1,6 +1,4 @@
-/* PASO 1: Define las variables de color en :root 
-  (este será tu tema oscuro por defecto)
-*/
+/* 1. Define las variables de color en :root (tema oscuro por defecto) */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,9 +22,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* PASO 2: Define los otros temas.
-  ThemeContext.jsx añade estas clases al <body>
-*/
+/* 2. Define los otros temas */
 body.light-mode {
   --color-bg: #ffffff;
   --color-text: #213547;
@@ -51,14 +47,13 @@ body.high-contrast-mode {
   --color-danger-hover: #e600e6;
 }
 
-/* PASO 3: Aplica las variables al <body>
-*/
+/* 3. Aplica las variables al <body> (¡Esta es la corrección!) */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   
-  /* Aplica las variables de color */
+  /* Utiliza las variables para el fondo y el color */
   color: var(--color-text);
   background-color: var(--color-bg);
   
@@ -87,8 +82,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  /* (Este color es genérico, pero puedes cambiarlo a var(--color-card-bg)) */
-  background-color: #1a1a1a; 
+  background-color: #1a1a1a; /* Color base para botones */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -100,6 +94,4 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* PASO 4: ELIMINASTE el media query @media (prefers-color-scheme: light)
-  ¡Perfecto! Ya no es necesario.
-*/
+/* 4. (Eliminamos el @media (prefers-color-scheme: light) porque ya no es necesario) */

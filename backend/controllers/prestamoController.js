@@ -1,5 +1,4 @@
-import { Prestamo } from "../models/Prestamo.js";
-import { Libro } from "../models/Libro.js";
+import { Prestamo, Libro } from "../models/asociaciones.js";
 
 export const listarPrestamos = async (req, res) => {
   try {
