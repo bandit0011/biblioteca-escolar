@@ -1,4 +1,4 @@
-import { Prestamo, Libro } from "../models/asociaciones.js";
+import { Prestamo, Libro, Usuario } from "../models/asociaciones.js";
 
 export const listarPrestamos = async (req, res) => {
   try {
@@ -24,6 +24,10 @@ export const obtenerMisPrestamos = async (req, res) => {
 
 export const crearPrestamo = async (req, res) => {
   try {
+    console.log("======================================");
+    console.log("✅ API: INICIANDO crearPrestamo");
+    console.log("ID de usuario (del token):", req.usuario.id);
+    console.log("Body de la petición (del frontend):", req.body);
     // ---- ESTAS SON LAS LÍNEAS CORREGIDAS ----
     
     // 1. Obtenemos el ID del usuario desde el token (inyectado por verificarToken)
