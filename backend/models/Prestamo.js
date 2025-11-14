@@ -13,4 +13,8 @@ export const Prestamo = sequelize.define("Prestamo", {
     type: DataTypes.ENUM("pendiente", "devuelto", "retrasado"),
     defaultValue: "pendiente",
   },
+}, {
+  // +++ AÑADE ESTAS LÍNEAS +++
+  tableName: "prestamos", // Especifica el nombre correcto de la tabla
+  timestamps: false    // ¡Esta es la corrección!
 });
