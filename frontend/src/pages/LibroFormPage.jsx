@@ -33,7 +33,7 @@ export default function LibroFormPage() {
       } else {
         await api.post("/libros", data);
       }
-      navigate("/admin/libros");
+      navigate("/admin");
     } catch (error) {
       console.error("Error guardando libro:", error);
     }

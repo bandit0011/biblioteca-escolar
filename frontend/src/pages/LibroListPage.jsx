@@ -28,7 +28,7 @@ export default function LibroListPage({ admin = false }) {
       <h1>Libros Disponibles</h1>
 
       {admin && (
-        <Link to="/admin/libros/nuevo">➕ Agregar Libro</Link>
+        <Link to="/admin/libros/crear">➕ Agregar Libro</Link>
       )}
 
       <ul>

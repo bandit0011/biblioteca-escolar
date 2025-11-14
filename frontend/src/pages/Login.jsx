@@ -1,110 +1,66 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios"; // Asegúrate que la ruta sea correcta
 
-export default function Navbar() {
-  const [usuario, setUsuario] = useState(null);
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Función para cargar usuario desde localStorage
-    const cargarUsuario = () => {
-      const datos = localStorage.getItem("usuario");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(""); // Limpiar error previo
 
-      console.log("📦 Navbar detecta en localStorage:", datos);
+    try {
+      // 1. Llamar al API de login (que ahora está en /api/auth/login)
+      const res = await api.post("/auth/login", { email, contrasena });
 
-      if (datos) {
-        const usuarioParseado = JSON.parse(datos);
-        console.log("✅ Usuario parseado:", usuarioParseado);
-        setUsuario(usuarioParseado);
-      } else {
-        console.log("❌ No hay usuario en localStorage");
-        setUsuario(null);
-      }
-    };
+      // 2. Guardar los datos en localStorage
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("usuario", JSON.stringify(res.data.usuario));
+      localStorage.setItem("rol", res.data.usuario.rol);
 
-    cargarUsuario();
+      // 3. Notificar a otros componentes (como Navbar) que el storage cambió
+      window.dispatchEvent(new Event("storage"));
 
-    // Escuchar cambios manuales en localStorage
-    window.addEventListener("storage", cargarUsuario);
+      // 4. Redirigir al dashboard
+      navigate("/admin");
 
-    return () => window.removeEventListener("storage", cargarUsuario);
-  }, []);
-
-  const cerrarSesion = () => {
-    console.log("🚪 Cerrando sesión...");
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("rol");
-
-    setUsuario(null);
-
-    // Notificar cambio
-    window.dispatchEvent(new Event("storage"));
-
-    window.location.href = "/login";
+    } catch (err) {
+      console.error("Error en el login:", err);
+      setError(err.response?.data?.error || "Error al iniciar sesión");
+    }
   };
 
-  console.log("👀 Estado actual usuario en Navbar:", usuario);
-
   return (
-    <nav
-      style={{
-        display: "flex",
-        padding: "10px",
-        background: "#333",
-        color: "white",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      {/* IZQUIERDA */}
-      <div>
-        <Link to="/" style={{ color: "white", marginRight: 20 }}>
-          Inicio
-        </Link>
+    <div style={{ padding: "20px" }}>
+      <h2>Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div style={{ marginTop: "10px" }}>
+          <label>Contraseña:</label>
+          <input
+            type="password"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" style={{ marginTop: "15px" }}>
+          Entrar
+        </button>
 
-        <Link to="/libros" style={{ color: "white", marginRight: 20 }}>
-          Libros
-        </Link>
-
-        {/* Solo ADMIN */}
-        {usuario?.rol === "admin" && (
-          <Link to="/admin" style={{ color: "white", marginRight: 20 }}>
-            Admin
-          </Link>
-        )}
-      </div>
-
-      {/* DERECHA */}
-      <div>
-        {!usuario && (
-          <Link to="/login" style={{ color: "white" }}>
-            Iniciar sesión
-          </Link>
-        )}
-
-        {usuario && (
-          <>
-            <span style={{ marginRight: 15 }}>
-              👋 Hola, <strong>{usuario.nombre}</strong>
-            </span>
-
-            <button
-              onClick={cerrarSesion}
-              style={{
-                padding: "5px 10px",
-                background: "#ff4444",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Cerrar sesión
-            </button>
-          </>
-        )}
-      </div>
-    </nav>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+      </form>
+    </div>
   );
 }
