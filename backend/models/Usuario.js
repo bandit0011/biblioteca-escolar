@@ -28,4 +28,8 @@ export const Usuario = sequelize.define("Usuario", {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+}, {
+  // +++ AÑADE ESTE BLOQUE +++
+  tableName: "usuarios", // Tu tabla se llama "usuarios" en plural
+  timestamps: false    // Para que no busque createdAt/updatedAt
 });

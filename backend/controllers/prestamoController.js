@@ -66,14 +66,10 @@ export const devolverLibro = async (req, res) => {
     const prestamo = await Prestamo.findByPk(req.params.id, { include: Libro });
     if (!prestamo) return res.status(404).json({ mensaje: "Préstamo no encontrado" });
 
-    // --- ¡ESTA ES LA VALIDACIÓN QUE FALTA! ---
-    // Si el préstamo ya está "devuelto", detenemos la ejecución y enviamos un error 400.
     if (prestamo.estado === "devuelto") {
       return res.status(400).json({ mensaje: "Este libro ya fue devuelto anteriormente." });
     }
-    // --- FIN DE LA VALIDACIÓN ---
 
-    // Si llegamos aquí, el estado es "pendiente", así que procedemos.
     await prestamo.update({ estado: "devuelto" });
 
     const libro = prestamo.Libro;
@@ -81,7 +77,10 @@ export const devolverLibro = async (req, res) => {
       await libro.update({ cantidad_disponible: libro.cantidad_disponible + 1 });
     }
 
-    // Devolvemos el préstamo actualizado (ahora con estado "devuelto")
+    // +++ AÑADE ESTA LÍNEA AQUÍ +++
+    // Refresca el objeto 'prestamo' desde la BD
+    await prestamo.reload(); 
+
     res.json({ mensaje: "Libro devuelto correctamente", prestamo });
 
   } catch (error) {

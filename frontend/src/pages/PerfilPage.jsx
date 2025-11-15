@@ -42,13 +42,13 @@ export default function PerfilPage() {
     if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
 
     try {
-      // 1. Capturamos la respuesta de la API (que contiene el préstamo actualizado)
+      // 1. Capturamos la respuesta (que contiene el préstamo actualizado)
       const res = await api.put(`/prestamos/${id_prestamo}/devolver`);
       
       // 2. Obtenemos el préstamo con el nuevo estado: "devuelto"
       const prestamoActualizado = res.data.prestamo;
 
-      // 3. Actualizamos el estado local INMEDIATAMENTE
+      // 3. Actualizamos el estado de React INMEDIATAMENTE
       // Buscamos en la lista actual el préstamo que cambió y lo reemplazamos
       setPrestamos(prestamosActuales => 
         prestamosActuales.map(p => 
@@ -58,8 +58,8 @@ export default function PerfilPage() {
       
       alert("Libro devuelto con éxito");
       
-      // 4. YA NO necesitamos esta línea, la UI se actualiza al instante
-      // cargarMisPrestamos(); 
+      // 4. YA NO llamamos a cargarMisPrestamos()
+      // cargarMisPrestamos(); // <--- ELIMINADO
 
     } catch (error) {
       console.error("Error al devolver el libro:", error);
