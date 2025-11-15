@@ -63,28 +63,44 @@ export const crearPrestamo = async (req, res) => {
 
 export const devolverLibro = async (req, res) => {
   try {
+    console.log(`--- API: Iniciando devolución para préstamo ID: ${req.params.id} ---`);
     const prestamo = await Prestamo.findByPk(req.params.id, { include: Libro });
-    if (!prestamo) return res.status(404).json({ mensaje: "Préstamo no encontrado" });
+    
+    if (!prestamo) {
+      console.log("--- API: Préstamo no encontrado ---");
+      return res.status(404).json({ mensaje: "Préstamo no encontrado" });
+    }
+
+    console.log(`--- API: Préstamo encontrado. Estado actual: ${prestamo.estado} ---`);
 
     if (prestamo.estado === "devuelto") {
+      console.log("--- API: El libro ya estaba devuelto. Enviando error 400. ---");
       return res.status(400).json({ mensaje: "Este libro ya fue devuelto anteriormente." });
     }
 
+    console.log("--- API: Actualizando estado a 'devuelto'... ---");
     await prestamo.update({ estado: "devuelto" });
+    console.log("--- API: Estado actualizado en BD. ---");
 
     const libro = prestamo.Libro;
     if (libro) {
+      console.log("--- API: Actualizando stock del libro... ---");
       await libro.update({ cantidad_disponible: libro.cantidad_disponible + 1 });
+      console.log("--- API: Stock actualizado. ---");
     }
 
-    // +++ AÑADE ESTA LÍNEA AQUÍ +++
-    // Refresca el objeto 'prestamo' desde la BD
-    await prestamo.reload(); 
+    // +++ ESTA ES LA LÍNEA DE DEPDEBUGGING MÁS IMPORTANTE +++
+    console.log(`--- API: Estado del objeto 'prestamo' ANTES de reload: ${prestamo.estado} ---`);
+    
+    await prestamo.reload(); // ¡Asegúrate que esta línea esté aquí!
+
+    console.log(`--- API: Estado del objeto 'prestamo' DESPUÉS de reload: ${prestamo.estado} ---`);
+    console.log("--- API: Enviando respuesta exitosa al frontend. ---");
 
     res.json({ mensaje: "Libro devuelto correctamente", prestamo });
 
   } catch (error) {
-    console.error("Error al devolver libro:", error);
+    console.error("--- API: ❌ ERROR FATAL en devolverLibro ---", error);
     res.status(500).json({ mensaje: "Error al devolver libro", error: error.message });
   }
 };

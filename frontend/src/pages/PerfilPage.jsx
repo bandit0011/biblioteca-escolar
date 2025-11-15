@@ -42,28 +42,26 @@ export default function PerfilPage() {
     if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
 
     try {
-      // 1. Capturamos la respuesta (que contiene el préstamo actualizado)
+      console.log(`--- FE: Intentando devolver préstamo ID: ${id_prestamo} ---`);
       const res = await api.put(`/prestamos/${id_prestamo}/devolver`);
       
-      // 2. Obtenemos el préstamo con el nuevo estado: "devuelto"
       const prestamoActualizado = res.data.prestamo;
 
-      // 3. Actualizamos el estado de React INMEDIATAMENTE
-      // Buscamos en la lista actual el préstamo que cambió y lo reemplazamos
+      // +++ ESTE ES EL LOG MÁS IMPORTANTE DEL FRONTEND +++
+      console.log("--- FE: Respuesta recibida del backend ---", prestamoActualizado);
+      console.log(`--- FE: El estado recibido es: ${prestamoActualizado.estado} ---`);
+
       setPrestamos(prestamosActuales => 
         prestamosActuales.map(p => 
           p.id_prestamo === id_prestamo ? prestamoActualizado : p
         )
       );
       
+      console.log("--- FE: Estado de React actualizado. El botón debería desaparecer. ---");
       alert("Libro devuelto con éxito");
-      
-      // 4. YA NO llamamos a cargarMisPrestamos()
-      // cargarMisPrestamos(); // <--- ELIMINADO
 
     } catch (error) {
-      console.error("Error al devolver el libro:", error);
-      // Mostramos el mensaje de error del backend (ej. "Este libro ya fue devuelto")
+      console.error("--- FE: ❌ Error al devolver el libro ---", error.response?.data?.mensaje || error.message);
       alert(error.response?.data?.mensaje || "No se pudo devolver el libro.");
     }
   };

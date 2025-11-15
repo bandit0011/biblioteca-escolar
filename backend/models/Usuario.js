@@ -30,6 +30,6 @@ export const Usuario = sequelize.define("Usuario", {
   },
 }, {
   // +++ AÑADE ESTE BLOQUE +++
-  tableName: "usuarios", // Tu tabla se llama "usuarios" en plural
-  timestamps: false    // Para que no busque createdAt/updatedAt
+  tableName: "usuarios",
+  timestamps: false   
 });
