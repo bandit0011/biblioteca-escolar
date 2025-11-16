@@ -34,7 +34,9 @@
 }
 
 .libro-card-info {
-  padding: 1.5rem;
+  /* Modificamos el padding-top para que el título
+     quede justo debajo del botón flotante */
+  padding: 0.5rem 1.5rem 1.5rem 1.5rem; 
   flex-grow: 1; /* Hace que este div ocupe el espacio sobrante */
 }
 
@@ -104,4 +106,20 @@
 .status-devuelto {
   background-color: #006b21;
   color: #a8ffc5;
+}
+
+.libro-card-imagen + .libro-card-admin {
+  /* 1. Lo centramos horizontalmente */
+  justify-content: center; 
+  
+  /* 2. Eliminamos el padding vertical que lo empujaba hacia abajo */
+  padding-top: 0;
+  padding-bottom: 0;
+  
+  /* 3. Lo subimos la mitad de su altura para centrarlo en la línea */
+  transform: translateY(-50%);
+  
+  /* 4. Nos aseguramos que esté por encima del texto */
+  position: relative; 
+  z-index: 10;
 }

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; // <-- 1. IMPORTA EL FOOTER
 import HomePage from "./pages/HomePage";
 import LibroListPage from "./pages/LibroListPage";
 import Login from "./pages/Login";
@@ -72,6 +73,7 @@ export default function App() {
         />
         </Routes>
       </div>
+      <Footer />
     </BrowserRouter>
   );
 }

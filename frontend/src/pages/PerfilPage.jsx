@@ -70,7 +70,7 @@ export default function PerfilPage() {
     <div>
       <h1>Mi Perfil</h1>
       {usuario && (
-        <div style={{ background: '#2c2c2c', padding: '20px', borderRadius: '8px', maxWidth: '600px', margin: 'auto' }}>
+        <div style={{ background: 'var(--color-card-bg)', padding: '20px', borderRadius: '8px', maxWidth: '600px', margin: 'auto' }}>
           <p><strong>Nombre:</strong> {usuario.nombre}</p>
           <p><strong>Email:</strong> {usuario.email}</p>
           <p><strong>Rol:</strong> {usuario.rol}</p>
@@ -99,20 +99,23 @@ export default function PerfilPage() {
               <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
               <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
             </div>
-            <div className="libro-card-admin">
-                <button 
-                  onClick={() => handleDevolver(prestamo.id_prestamo)}
-                  style={{
-                    backgroundColor: 'var(--color-danger)', 
-                    color: 'white', 
-                    border: 'none', 
-                    cursor: 'pointer',
-                    width: '100%'
-                  }}
-                >
-                  Devolver Libro
-                </button>
-              </div>
+            
+            {prestamo.estado === 'pendiente' && (
+              <div className="libro-card-admin">
+                  <button 
+                    onClick={() => handleDevolver(prestamo.id_prestamo)}
+                    style={{
+                      backgroundColor: 'var(--color-danger)', 
+                      color: 'white', 
+                      border: 'none', 
+                      cursor: 'pointer',
+                      width: '100%'
+                    }}
+                  >
+                    Devolver Libro
+                  </button>
+                </div>
+            )}
           </li>
         ))}
       </div>
