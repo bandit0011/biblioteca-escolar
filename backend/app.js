@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { conectarDB } from "./config/db.js";
+import contactoRoutes from "./routes/contactoRoutes.js";
 
 // import usuarioRoutes from "./routes/usuarioRoutes.js"; // <-- Eliminado/Comentado
 import libroRoutes from "./routes/libroRoutes.js";
@@ -21,6 +22,7 @@ app.use("/api/libros", libroRoutes);
 app.use("/api/categorias", categoriaRoutes);
 app.use("/api/prestamos", prestamoRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/contacto", contactoRoutes);
 
 await conectarDB();
 

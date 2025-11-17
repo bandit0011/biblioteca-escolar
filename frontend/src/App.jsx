@@ -13,6 +13,7 @@ import LibroFormPage from "./pages/LibroFormPage";
 import './App.css'; // <-- Importa el CSS que acabamos de editar
 import CategoriaPage from "./pages/CategoriaPage";
 import RegistroPage from "./pages/RegistroPage";
+import ContactoPage from "./pages/ContactoPage";
 
 export default function App() {
   return (
@@ -70,7 +71,9 @@ export default function App() {
               <CategoriaPage />
             </AdminRoute>
           }
-        />
+          />
+          <Route path="/registro" element={<RegistroPage />} />
+          <Route path="/contacto" element={<ContactoPage />} />
         </Routes>
       </div>
       <Footer />

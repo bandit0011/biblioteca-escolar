@@ -33,7 +33,7 @@ export default function Navbar() {
       <div className="navbar-links">
         <Link to="/">Inicio</Link>
         <Link to="/libros">Libros</Link>
-
+        <Link to="/contacto">Contacto</Link>
         {/* --- ESTE ES EL ENLACE QUE PEDISTE --- */}
         {usuario && (
           <Link to="/perfil">Mi Perfil</Link>
