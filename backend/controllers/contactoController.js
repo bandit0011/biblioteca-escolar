@@ -14,19 +14,20 @@ export const enviarCorreo = async (req, res) => {
   try {
     // Usamos 'service: gmail' en lugar de host/port manuales
     const transporter = nodemailer.createTransport({
-      
-      service: 'gmail', 
+      host: 'smtp.resend.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+        user: 'resend',            // El usuario SIEMPRE es 'resend'
+        pass: process.env.EMAIL_PASS // Aquí va tu API Key de Resend (re_123...)
+      }
     });
 
     // 2. Configurar el mensaje
     const mailOptions = {
-      from: `"Biblioteca Escolar" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // Se envía al administrador (tú mismo)
-      replyTo: email, // Para que al responder le llegue al usuario
+      from: 'onboarding@resend.dev', // <--- OJO: Resend te obliga a usar este remitente en la versión gratis
+      to: 'andres.rojasxv@gmail.com', // A donde quieres que llegue (tu correo real)
+      replyTo: email, // Para que puedas responderle al usuario
       subject: `Nuevo mensaje de contacto: ${asunto}`,
       text: `
         Nombre: ${nombre}
