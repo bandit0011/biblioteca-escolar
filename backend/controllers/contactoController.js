@@ -7,20 +7,13 @@ export const enviarCorreo = async (req, res) => {
   const { nombre, email, asunto, mensaje } = req.body;
 
   try {
-    // 1. Configurar el transporte (quién envía)
+    // Usamos 'service: gmail' en lugar de host/port manuales
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,            // <-- CAMBIO 1: Puerto 465
-      secure: true,         // <-- CAMBIO 2: true para 465
+      service: 'gmail', 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      tls: {
-        rejectUnauthorized: false
-      },
-      logger: true, // Mantenemos los logs por si acaso
-      debug: true
     });
 
     // 2. Configurar el mensaje
