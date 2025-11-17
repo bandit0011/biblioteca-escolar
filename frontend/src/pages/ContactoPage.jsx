@@ -82,7 +82,7 @@ export default function ContactoPage() {
             rows="5"
             placeholder="Escribe tu mensaje aquí..."
             style={{
-              width: "100%",
+              width: "95%",
               padding: "10px",
               borderRadius: "5px",
               border: "1px solid var(--color-border)",
