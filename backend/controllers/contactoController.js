@@ -15,12 +15,13 @@ export const enviarCorreo = async (req, res) => {
     // Usamos 'service: gmail' en lugar de host/port manuales
     const transporter = nodemailer.createTransport({
       host: 'smtp.resend.com',
-      port: 465,
-      secure: true,
+      port: 587,             // <--- CAMBIO 1: Puerto 587
+      secure: false,         // <--- CAMBIO 2: false (usa STARTTLS)
       auth: {
         user: 'resend',            // El usuario SIEMPRE es 'resend'
         pass: process.env.EMAIL_PASS // Aquí va tu API Key de Resend (re_123...)
-      }
+      },
+      requireTLS: true,
     });
 
     // 2. Configurar el mensaje
