@@ -6,9 +6,15 @@ dotenv.config();
 export const enviarCorreo = async (req, res) => {
   const { nombre, email, asunto, mensaje } = req.body;
 
+  console.log("Intentando enviar correo con:");
+  console.log("User:", process.env.EMAIL_USER);
+  // NO imprimas la contraseña completa, solo los primeros 3 caracteres para ver si existe
+  console.log("Pass (inicio):", process.env.EMAIL_PASS ? process.env.EMAIL_PASS.substring(0, 3) + "..." : "NO DEFINIDA");
+
   try {
     // Usamos 'service: gmail' en lugar de host/port manuales
     const transporter = nodemailer.createTransport({
+      
       service: 'gmail', 
       auth: {
         user: process.env.EMAIL_USER,
