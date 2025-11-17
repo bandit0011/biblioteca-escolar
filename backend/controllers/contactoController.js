@@ -10,8 +10,8 @@ export const enviarCorreo = async (req, res) => {
     // 1. Configurar el transporte (quién envía)
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 587,
-      secure: false, 
+      port: 465,            // <-- CAMBIO 1: Puerto 465
+      secure: true,         // <-- CAMBIO 2: true para 465
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -19,9 +19,8 @@ export const enviarCorreo = async (req, res) => {
       tls: {
         rejectUnauthorized: false
       },
-      // --- AGREGA ESTAS DOS LÍNEAS ---
-      logger: true, // Imprimirá en los logs todo lo que pase
-      debug: true   // Incluirá detalles técnicos del error
+      logger: true, // Mantenemos los logs por si acaso
+      debug: true
     });
 
     // 2. Configurar el mensaje
