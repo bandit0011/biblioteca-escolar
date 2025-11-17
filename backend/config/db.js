@@ -11,6 +11,12 @@ export const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     logging: false,
+    pool: {
+      max: 2,     // Máximo de conexiones (deja espacio para Workbench)
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 );
 
