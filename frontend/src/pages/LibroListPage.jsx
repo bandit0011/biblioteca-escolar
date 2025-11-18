@@ -34,7 +34,7 @@ export default function LibroListPage({ admin = false }) {
       try {
         setLoading(true);
         const [librosRes, categoriasRes] = await Promise.all([
-          api.get("/libros"),
+          api.get(`/libros?page=${page}&limit=9`),
           api.get("/categorias")
         ]);
         
@@ -272,6 +272,25 @@ export default function LibroListPage({ admin = false }) {
             </div>
           </li>
         ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '30px' }}>
+        <button 
+          onClick={() => setPage(p => Math.max(p - 1, 1))}
+          disabled={page === 1}
+          style={{ opacity: page === 1 ? 0.5 : 1 }}
+        >
+          ⬅️ Anterior
+        </button>
+        
+        <span style={{ alignSelf: 'center' }}>Página {page} de {totalPages}</span>
+        
+        <button 
+          onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+          disabled={page === totalPages}
+          style={{ opacity: page === totalPages ? 0.5 : 1 }}
+        >
+          Siguiente ➡️
+        </button>
       </div>
     </div>
   );
