@@ -10,7 +10,6 @@ export default function Navbar() {
   useEffect(() => {
     const cargarUsuario = () => {
       const datos = localStorage.getItem("usuario");
-      console.log("📦 Navbar detecta usuario en localStorage:", datos);
       setUsuario(datos ? JSON.parse(datos) : null);
     };
 
@@ -25,23 +24,39 @@ export default function Navbar() {
     localStorage.removeItem("rol");
     setUsuario(null);
     window.dispatchEvent(new Event("storage"));
-    window.location.href = "/login"; // Redirige a login al cerrar sesión
+    window.location.href = "/login"; 
   };
+
+  // 1. Creamos una variable para identificar si es personal de la biblioteca
+  const esPersonal = usuario?.rol === "admin" || usuario?.rol === "bibliotecario";
 
   return (
     <nav className="navbar">
       <div className="navbar-links">
-        <Link to="/">Inicio</Link>
-        <Link to="/libros">Libros</Link>
+        
+        {/* 2. Lógica Condicional: */}
+        
+        {/* SI NO ES PERSONAL (es decir, es estudiante o visitante), ve Inicio y Libros */}
+        {!esPersonal && (
+          <>
+            <Link to="/">Inicio</Link>
+            <Link to="/libros">Libros</Link>
+          </>
+        )}
+
+        {/* Enlace de Contacto visible para todos (o puedes ocultarlo también si quieres) */}
         <Link to="/contacto">Contacto</Link>
-        {/* --- ESTE ES EL ENLACE QUE PEDISTE --- */}
+
+        {/* Mi Perfil visible para cualquier usuario logueado */}
         {usuario && (
           <Link to="/perfil">Mi Perfil</Link>
         )}
-        {/* --- FIN DEL BLOQUE AÑADIDO --- */}
 
-        {usuario?.rol === "admin" && (
-          <Link to="/admin">Admin</Link>
+        {/* 3. SI ES PERSONAL, ve el Panel de Gestión (y no ve Inicio/Libros) */}
+        {esPersonal && (
+          <Link to="/admin" style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>
+            ⚙️ Panel de Gestión
+          </Link>
         )}
       </div>
 
@@ -66,7 +81,8 @@ export default function Navbar() {
 
         {usuario && (
           <>
-            <span>👋 Hola, {usuario.nombre}</span>
+            {/* Muestra el rol para confirmar que funciona */}
+            <span>👋 Hola, {usuario.nombre} ({usuario.rol})</span>
             <button onClick={cerrarSesion}>Cerrar sesión</button>
           </>
         )}
