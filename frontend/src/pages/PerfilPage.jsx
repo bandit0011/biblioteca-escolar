@@ -59,8 +59,42 @@ export default function PerfilPage() {
     }
   };
 
-  // ... (Mantener tu función handleDevolver existente aquí) ...
-  const handleDevolver = async (id_prestamo) => { /* ... tu código ... */ };
+  const handleDevolver = async (id_prestamo) => {
+    if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
+
+    try {
+      // 1. Llamada a la API
+      const res = await api.put(`/prestamos/${id_prestamo}/devolver`);
+      
+      // 2. Obtenemos el préstamo actualizado desde la respuesta
+      const prestamoResponse = res.data.prestamo;
+
+      // 3. Actualizamos el estado
+      setPrestamos(prestamosActuales => 
+        prestamosActuales.map(p => {
+          if (p.id_prestamo === id_prestamo) {
+            // CORRECCIÓN CLAVE:
+            // Creamos un nuevo objeto combinando:
+            // - 'p': El préstamo original (que TIENE la info del Libro)
+            // - 'prestamoResponse': La respuesta del servidor (que tiene el nuevo 'estado')
+            // De esta forma, no perdemos p.Libro
+            return { 
+              ...p, 
+              estado: prestamoResponse.estado,
+              fecha_devolucion: prestamoResponse.fecha_devolucion // Si la API actualiza esto también
+            };
+          }
+          return p;
+        })
+      );
+      
+      toast.success("Libro devuelto con éxito");
+
+    } catch (error) {
+      console.error("Error al devolver:", error);
+      toast.error(error.response?.data?.mensaje || "No se pudo devolver el libro.");
+    }
+  };
 
   return (
     <div>
