@@ -125,7 +125,7 @@ export default function LibroListPage({ admin = false }) {
         placeholder="Buscar por título o autor..."
         value={searchTerm}
         onChange={handleSearchChange} // <--- Usamos el nuevo handler
-        style={{ /* ... tus estilos ... */ width: '100%', padding: '10px', marginBottom: '10px' }}
+        style={{ /* ... tus estilos ... */ width: '95%', padding: '10px', marginBottom: '10px' }}
       />
 
       {/* Filtro de Categoría */}
