@@ -44,9 +44,6 @@ export default function Navbar() {
           </>
         )}
 
-        {/* Enlace de Contacto visible para todos (o puedes ocultarlo también si quieres) */}
-        <Link to="/contacto">Contacto</Link>
-
         {usuario?.rol !== "bibliotecario" && (
           <Link to="/contacto">Contacto</Link>
         )}
