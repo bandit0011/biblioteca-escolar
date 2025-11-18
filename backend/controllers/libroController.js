@@ -1,15 +1,37 @@
 import { Libro, Categoria } from "../models/asociaciones.js";
+import { Op } from "sequelize"; // <--- 1. IMPORTAR Op
+
+// Obtener todos los libros
+import { Libro, Categoria } from "../models/asociaciones.js";
+import { Op } from "sequelize"; // <--- 1. IMPORTAR Op
 
 // Obtener todos los libros
 export const obtenerLibros = async (req, res) => {
   try {
-    // 1. Recibir página y límite por query param (ej: ?page=1&limit=10)
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 9; // 9 libros por defecto
+    const limit = parseInt(req.query.limit) || 9;
     const offset = (page - 1) * limit;
+    
+    // 2. Extraer parámetros de búsqueda y categoría
+    const { search, category } = req.query; 
 
-    // 2. Usar findAndCountAll
+    // 3. Construir el objeto "where" dinámicamente
+    const whereCondition = {};
+
+    if (search) {
+      whereCondition[Op.or] = [
+        { titulo: { [Op.like]: `%${search}%` } },
+        { autor: { [Op.like]: `%${search}%` } }
+      ];
+    }
+
+    if (category) {
+      whereCondition.categoria_id = category;
+    }
+
+    // 4. Pasar el "whereCondition" a la consulta
     const { count, rows } = await Libro.findAndCountAll({
+      where: whereCondition, // <--- APLICAR FILTRO AQUÍ
       include: {
         model: Categoria,
         as: "Categoria",
@@ -17,15 +39,14 @@ export const obtenerLibros = async (req, res) => {
       },
       limit: limit,
       offset: offset,
-      // Opcional: order: [['titulo', 'ASC']]
+      order: [['titulo', 'ASC']] // Opcional: ordenar alfabéticamente
     });
 
-    // 3. Responder con estructura de paginación
     res.json({
       totalLibros: count,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
-      libros: rows // 'rows' contiene los libros de esta página
+      libros: rows
     });
 
   } catch (error) {
