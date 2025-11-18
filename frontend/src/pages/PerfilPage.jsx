@@ -102,7 +102,7 @@ export default function PerfilPage() {
                     <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
                   </div>
                   
-                  {prestamo.estado === 'pendiente' && (
+                  {prestamo.estado === 'aprobado' && (
                     <div className="libro-card-admin">
                         <button 
                           onClick={() => handleDevolver(prestamo.id_prestamo)}
