@@ -1,6 +1,3 @@
-import { Libro, Categoria } from "../models/asociaciones.js";
-import { Op } from "sequelize"; // <--- 1. IMPORTAR Op
-
 // Obtener todos los libros
 import { Libro, Categoria } from "../models/asociaciones.js";
 import { Op } from "sequelize"; // <--- 1. IMPORTAR Op
