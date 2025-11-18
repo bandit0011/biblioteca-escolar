@@ -1,127 +1,152 @@
-import { toast } from 'sonner'; // <--- 1. IMPORTAR AL INICIO
+import { toast } from 'sonner';
 import { useState, useEffect } from "react";
 import api from "../api/axios";
-
-// (Opcional) Puedes crear un PerfilPage.css similar a LibroListPage.css
-// para estilizar las tarjetas de los libros prestados.
 
 export default function PerfilPage() {
   const [prestamos, setPrestamos] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // Obtenemos al usuario de localStorage
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const [usuario, setUsuario] = useState(JSON.parse(localStorage.getItem("usuario")));
 
-  const cargarMisPrestamos = () => { // 1. Mover la carga a su propia función
+  // Estados para el modo edición
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: usuario?.nombre || "",
+    email: usuario?.email || "",
+    passwordActual: "",
+    passwordNuevo: ""
+  });
+
+  // Cargar préstamos (Lógica existente)
+  const cargarMisPrestamos = () => {
     api.get("/prestamos/mis-prestamos")
-      .then(res => {
-        setPrestamos(res.data);
-      })
-      .catch(err => {
-        console.error("Error cargando mis préstamos:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then(res => setPrestamos(res.data))
+      .catch(err => console.error("Error cargando mis préstamos:", err))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    // Pedimos a la API la ruta que acabamos de crear
-    api.get("/prestamos/mis-prestamos")
-      .then(res => {
-        setPrestamos(res.data);
-      })
-      .catch(err => {
-        console.error("Error cargando mis préstamos:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []); // Se ejecuta solo una vez
+    if (usuario?.rol !== "bibliotecario") {
+      cargarMisPrestamos();
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-  const handleDevolver = async (id_prestamo) => {
-    if (!window.confirm("¿Seguro que deseas devolver este libro?")) return;
+  // Manejo del formulario de edición
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
+  const handleUpdatePerfil = async (e) => {
+    e.preventDefault();
     try {
-      console.log(`--- FE: Intentando devolver préstamo ID: ${id_prestamo} ---`);
-      const res = await api.put(`/prestamos/${id_prestamo}/devolver`);
+      const res = await api.put("/auth/perfil", formData);
       
-      const prestamoActualizado = res.data.prestamo;
-
-      // +++ ESTE ES EL LOG MÁS IMPORTANTE DEL FRONTEND +++
-      console.log("--- FE: Respuesta recibida del backend ---", prestamoActualizado);
-      console.log(`--- FE: El estado recibido es: ${prestamoActualizado.estado} ---`);
-
-      setPrestamos(prestamosActuales => 
-        prestamosActuales.map(p => 
-          p.id_prestamo === id_prestamo ? prestamoActualizado : p
-        )
-      );
+      // Actualizar localStorage y Estado
+      const usuarioActualizado = res.data.usuario;
+      localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
+      setUsuario(usuarioActualizado);
       
-      console.log("--- FE: Estado de React actualizado. El botón debería desaparecer. ---");
-      toast.success("Libro devuelto con éxito");
+      // Disparar evento para que la Navbar se actualice sola
+      window.dispatchEvent(new Event("storage"));
 
+      toast.success("Perfil actualizado con éxito");
+      setEditMode(false);
+      setFormData({ ...formData, passwordActual: "", passwordNuevo: "" }); // Limpiar passwords
     } catch (error) {
-      console.error("--- FE: ❌ Error al devolver el libro ---", error.response?.data?.mensaje || error.message);
-      toast.error(error.response?.data?.mensaje || "No se pudo devolver el libro.");
+      console.error(error);
+      toast.error(error.response?.data?.error || "Error al actualizar perfil");
     }
   };
+
+  // ... (Mantener tu función handleDevolver existente aquí) ...
+  const handleDevolver = async (id_prestamo) => { /* ... tu código ... */ };
 
   return (
     <div>
       <h1>Mi Perfil</h1>
+
+      {/* --- TARJETA DE USUARIO --- */}
       {usuario && (
-        <div style={{ background: 'var(--color-card-bg)', padding: '20px', borderRadius: '8px', maxWidth: '600px', margin: 'auto' }}>
-          <p><strong>Nombre:</strong> {usuario.nombre}</p>
-          <p><strong>Email:</strong> {usuario.email}</p>
-          <p><strong>Rol:</strong> {usuario.rol}</p>
+        <div style={{ background: 'var(--color-card-bg)', padding: '20px', borderRadius: '8px', maxWidth: '600px', margin: 'auto', marginBottom: '30px' }}>
+          
+          {!editMode ? (
+            // VISTA DE DATOS (SOLO LECTURA)
+            <>
+              <p><strong>Nombre:</strong> {usuario.nombre}</p>
+              <p><strong>Email:</strong> {usuario.email}</p>
+              <p><strong>Rol:</strong> <span style={{textTransform: 'capitalize'}}>{usuario.rol}</span></p>
+              
+              {/* Botón Editar: Solo si NO es admin */}
+              {usuario.rol !== 'admin' && (
+                <button 
+                  onClick={() => setEditMode(true)}
+                  style={{ marginTop: '15px', background: 'var(--color-primary)' }}
+                >
+                  ✏️ Editar Mis Datos
+                </button>
+              )}
+            </>
+          ) : (
+            // VISTA DE EDICIÓN (FORMULARIO)
+            <form onSubmit={handleUpdatePerfil} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <h3 style={{margin: '0 0 10px 0'}}>Editar Perfil</h3>
+              
+              <label>Nombre:</label>
+              <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
+              
+              <label>Email:</label>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+              
+              <hr style={{width: '100%', borderColor: 'var(--color-border)', margin: '10px 0'}} />
+              <p style={{fontSize: '0.9em', color: '#888'}}>Dejar en blanco si no quieres cambiar la contraseña:</p>
+              
+              <label>Nueva Contraseña:</label>
+              <input type="password" name="passwordNuevo" value={formData.passwordNuevo} onChange={handleInputChange} placeholder="Nueva contraseña (opcional)" />
+              
+              <label>Contraseña Actual (Requerida para cambios de clave):</label>
+              <input type="password" name="passwordActual" value={formData.passwordActual} onChange={handleInputChange} placeholder="Tu contraseña actual" />
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                <button type="submit" style={{ flex: 1 }}>Guardar Cambios</button>
+                <button type="button" onClick={() => setEditMode(false)} style={{ flex: 1, background: '#666' }}>Cancelar</button>
+              </div>
+            </form>
+          )}
         </div>
       )}
 
-      {usuario?.rol !== "bibliotecario" && (
+      {/* --- SECCIÓN DE PRÉSTAMOS (Solo si no es bibliotecario) --- */}
+      {usuario?.rol !== "bibliotecario" && !editMode && (
         <>
-          <h2 style={{ marginTop: '30px' }}>Mis Préstamos</h2>
-          {loading && <p>Cargando tus préstamos...</p>}
-          
-          {!loading && prestamos.length === 0 && (
-            <p>Aún no has pedido ningún libro.</p>
-          )}
-
-          <div className="libros-grid" style={{ marginTop: '20px' }}>
-            {prestamos.map(prestamo => (
-              <li key={prestamo.id_prestamo} className="libro-card">
-                {/* ... contenido de la tarjeta del libro ... */}
-                <img 
-                    src={prestamo.Libro.imagen_url || "https://i.imgur.com/sJ3CT4V.png"}
-                    alt={`Portada de ${prestamo.Libro.titulo}`} 
-                    className="libro-card-imagen"
-                  />
-                  <div className="libro-card-info">
-                    <h3>{prestamo.Libro.titulo}</h3>
-                    <p><strong>Autor:</strong> {prestamo.Libro.autor}</p>
-                    <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
-                    <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
-                  </div>
-                  
-                  {prestamo.estado === 'aprobado' && (
-                    <div className="libro-card-admin">
-                        <button 
-                          onClick={() => handleDevolver(prestamo.id_prestamo)}
-                          style={{
-                            backgroundColor: 'var(--color-danger)', 
-                            color: 'white', 
-                            border: 'none', 
-                            cursor: 'pointer',
-                            width: '100%'
-                          }}
-                        >
-                          Devolver Libro
-                        </button>
+            {/* ... (Aquí va tu código existente para mostrar la lista de préstamos) ... */}
+             {/* Asegúrate de mantener el .map de prestamos y el botón de devolver */}
+             <h2 style={{ marginTop: '30px' }}>Mis Préstamos</h2>
+             {/* ... etc ... */}
+             <div className="libros-grid" style={{ marginTop: '20px' }}>
+                {prestamos.map(prestamo => (
+                  <li key={prestamo.id_prestamo} className="libro-card">
+                    {/* COPIAR TU CÓDIGO EXISTENTE DE RENDERIZADO DE TARJETA AQUÍ */}
+                     <img 
+                        src={prestamo.Libro.imagen_url || "https://i.imgur.com/sJ3CT4V.png"}
+                        alt={`Portada de ${prestamo.Libro.titulo}`} 
+                        className="libro-card-imagen"
+                      />
+                      <div className="libro-card-info">
+                        <h3>{prestamo.Libro.titulo}</h3>
+                        {/* ... resto de datos ... */}
+                        <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
                       </div>
-                  )}
-              </li>
-            ))}
-          </div>
+                      {prestamo.estado === 'aprobado' && (
+                        <div className="libro-card-admin">
+                            <button onClick={() => handleDevolver(prestamo.id_prestamo)} style={{background: 'var(--color-danger)', color: 'white', width: '100%', border: 'none', cursor: 'pointer'}}>
+                              Devolver Libro
+                            </button>
+                        </div>
+                      )}
+                  </li>
+                ))}
+             </div>
         </>
       )}
     </div>

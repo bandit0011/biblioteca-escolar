@@ -76,3 +76,64 @@ export const loginUsuario = async (req, res) => {
     res.status(500).json({ error: "Error en inicio de sesión" });
   }
 };
+
+export const actualizarPerfil = async (req, res) => {
+  try {
+    // El ID y Rol vienen del token (gracias al middleware verificarToken)
+    const { id, rol } = req.usuario;
+    const { nombre, email, passwordActual, passwordNuevo } = req.body;
+
+    // 1. RESTRICCIÓN: Impedir que el admin use esta ruta
+    if (rol === 'admin') {
+      return res.status(403).json({ error: "Los administradores no pueden editar su perfil desde aquí." });
+    }
+
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // 2. Actualizar Nombre
+    if (nombre) usuario.nombre = nombre;
+
+    // 3. Actualizar Email (Verificando que no esté en uso por otro)
+    if (email && email !== usuario.email) {
+      const existeEmail = await Usuario.findOne({ where: { email } });
+      if (existeEmail) {
+        return res.status(400).json({ error: "El correo ya está registrado por otro usuario" });
+      }
+      usuario.email = email;
+    }
+
+    // 4. Actualizar Contraseña (Si se envía)
+    if (passwordNuevo) {
+      // Es recomendable pedir la contraseña actual por seguridad
+      if (!passwordActual) {
+        return res.status(400).json({ error: "Debes ingresar tu contraseña actual para cambiarla" });
+      }
+      
+      const passwordValido = await bcrypt.compare(passwordActual, usuario.contrasena);
+      if (!passwordValido) {
+        return res.status(401).json({ error: "La contraseña actual es incorrecta" });
+      }
+
+      usuario.contrasena = await bcrypt.hash(passwordNuevo, 10);
+    }
+
+    await usuario.save();
+
+    res.json({
+      mensaje: "Perfil actualizado correctamente",
+      usuario: {
+        id_usuario: usuario.id_usuario,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        rol: usuario.rol,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error al actualizar perfil:", error);
+    res.status(500).json({ error: "Error al actualizar perfil" });
+  }
+};
