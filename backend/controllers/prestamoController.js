@@ -24,38 +24,38 @@ export const obtenerMisPrestamos = async (req, res) => {
 
 export const crearPrestamo = async (req, res) => {
   try {
-    console.log("======================================");
-    console.log("✅ API: INICIANDO crearPrestamo");
-    console.log("ID de usuario (del token):", req.usuario.id);
-    console.log("Body de la petición (del frontend):", req.body);
-    
     const id_usuario = req.usuario.id;
-    const { id_libro, fecha_devolucion } = req.body;
+    // 1. Extraemos también fecha_prestamo del body
+    const { id_libro, fecha_prestamo, fecha_devolucion } = req.body;
 
-    console.log("PASO 1: Buscando libro...");
+    // Validación básica de fechas
+    if (!fecha_prestamo || !fecha_devolucion) {
+      return res.status(400).json({ mensaje: "Debes seleccionar fecha de inicio y devolución" });
+    }
+
+    if (new Date(fecha_devolucion) <= new Date(fecha_prestamo)) {
+      return res.status(400).json({ mensaje: "La fecha de devolución debe ser posterior al inicio" });
+    }
+
     const libro = await Libro.findByPk(id_libro);
-    console.log("PASO 2: Libro encontrado. Disponible:", libro.cantidad_disponible);
 
     if (!libro || libro.cantidad_disponible <= 0)
       return res.status(400).json({ mensaje: "Libro no disponible" });
 
-    console.log("PASO 3: Creando préstamo...");
     const nuevo = await Prestamo.create({
       id_usuario: id_usuario,
       id_libro: id_libro,
-      fecha_devolucion: fecha_devolucion || null, 
+      // 2. Usamos las fechas enviadas por el usuario
+      fecha_prestamo: fecha_prestamo, 
+      fecha_devolucion: fecha_devolucion, 
       estado: "pendiente",
     });
-    console.log("PASO 4: Préstamo creado con ID:", nuevo.id_prestamo);
 
-    console.log("PASO 5: Actualizando stock del libro...");
     await libro.update({ cantidad_disponible: libro.cantidad_disponible - 1 });
-    console.log("PASO 6: Stock actualizado.");
 
     res.status(201).json({ mensaje: "Préstamo registrado", prestamo: nuevo });
 
   } catch (error) {
-    // Si falla, esto nos dirá qué paso fue el último en completarse
     console.error("❌ ERROR AL CREAR PRÉSTAMO:", error); 
     res.status(500).json({ mensaje: "Error al crear préstamo", error: error.message });
   }
