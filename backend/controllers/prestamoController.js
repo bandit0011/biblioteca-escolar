@@ -2,7 +2,8 @@ import { Prestamo, Libro, Usuario, Categoria } from "../models/asociaciones.js";
 
 export const listarPrestamos = async (req, res) => {
   try {
-    const prestamos = await Prestamo.findAll({ include: Libro });
+    // Incluimos Libro Y Usuario
+    const prestamos = await Prestamo.findAll({ include: [Libro, Usuario] });
     res.json(prestamos);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al obtener préstamos", error });
@@ -102,5 +103,46 @@ export const devolverLibro = async (req, res) => {
   } catch (error) {
     console.error("--- API: ❌ ERROR FATAL en devolverLibro ---", error);
     res.status(500).json({ mensaje: "Error al devolver libro", error: error.message });
+  }
+};
+
+export const cambiarEstadoPrestamo = async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body; // Esperamos 'aprobado' o 'rechazado'
+
+  try {
+    const prestamo = await Prestamo.findByPk(id, { include: Libro });
+
+    if (!prestamo) {
+      return res.status(404).json({ mensaje: "Préstamo no encontrado" });
+    }
+
+    // Si ya no está pendiente, no deberíamos poder aprobarlo/rechazarlo de nuevo
+    if (prestamo.estado !== 'pendiente') {
+      return res.status(400).json({ mensaje: "El préstamo no está en estado pendiente." });
+    }
+
+    if (estado === 'aprobado') {
+      // Simplemente cambiamos el estado, el stock ya se restó al crear la solicitud
+      await prestamo.update({ estado: 'aprobado' });
+    } 
+    else if (estado === 'rechazado') {
+      // Si rechazamos, DEVOLVEMOS el stock al libro
+      await prestamo.update({ estado: 'rechazado' });
+      
+      if (prestamo.Libro) {
+        await prestamo.Libro.update({ 
+          cantidad_disponible: prestamo.Libro.cantidad_disponible + 1 
+        });
+      }
+    } else {
+      return res.status(400).json({ mensaje: "Estado inválido" });
+    }
+
+    res.json({ mensaje: `Préstamo ${estado} correctamente`, prestamo });
+
+  } catch (error) {
+    console.error("Error actualizando préstamo:", error);
+    res.status(500).json({ mensaje: "Error al actualizar préstamo", error });
   }
 };

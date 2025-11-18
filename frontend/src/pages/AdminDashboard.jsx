@@ -15,6 +15,7 @@ export default function AdminDashboard() {
         {/* Dejamos solo un enlace para "Agregar Libro" */}
         <Link to="/admin/libros/crear" className="admin-boton-crear">➕ Agregar Libro</Link>
         <Link to="/admin/categorias" className="admin-boton-crear">📚 Gestionar Categorías</Link>
+        <Link to="/admin/prestamos" className="admin-boton-crear" style={{background: '#e67e22'}}>🛎️ Solicitudes</Link>
       </div>
 
       {/* 4. Renderizamos el componente que maneja su propia lógica de libros */}

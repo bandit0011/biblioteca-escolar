@@ -14,6 +14,7 @@ import './App.css'; // <-- Importa el CSS que acabamos de editar
 import CategoriaPage from "./pages/CategoriaPage";
 import RegistroPage from "./pages/RegistroPage";
 import ContactoPage from "./pages/ContactoPage";
+import PrestamosAdminPage from "./pages/PrestamosAdminPage";
 
 export default function App() {
   return (
@@ -74,6 +75,14 @@ export default function App() {
           />
           <Route path="/registro" element={<RegistroPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
+          <Route
+            path="/admin/prestamos"
+            element={
+              <AdminRoute>
+                <PrestamosAdminPage />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </div>
       <Footer />

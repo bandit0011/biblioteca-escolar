@@ -10,11 +10,11 @@ export const Prestamo = sequelize.define("Prestamo", {
   fecha_prestamo: { type: DataTypes.DATEONLY, defaultValue: DataTypes.NOW },
   fecha_devolucion: { type: DataTypes.DATEONLY },
   estado: {
-    type: DataTypes.ENUM("pendiente", "devuelto", "retrasado"),
+    // AGREGAMOS 'aprobado' y 'rechazado' a la lista
+    type: DataTypes.ENUM("pendiente", "aprobado", "rechazado", "devuelto", "retrasado"),
     defaultValue: "pendiente",
   },
 }, {
-  // +++ AÑADE ESTAS LÍNEAS +++
-  tableName: "prestamos", // Especifica el nombre correcto de la tabla
-  timestamps: false    // ¡Esta es la corrección!
+  tableName: "prestamos", 
+  timestamps: false    
 });
