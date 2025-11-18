@@ -1,3 +1,5 @@
+// frontend/src/pages/LibroListPage.jsx
+
 import { toast } from 'sonner'; // Importar
 import { useEffect, useState } from "react";
 import api from "../api/axios";
@@ -34,11 +36,13 @@ export default function LibroListPage({ admin = false }) {
       try {
         setLoading(true);
         const [librosRes, categoriasRes] = await Promise.all([
+          // 1. CORRECCIÓN: Usar query params para la paginación
           api.get(`/libros?page=${page}&limit=9`),
           api.get("/categorias")
         ]);
         
-        setLibros(librosRes.data);
+        // 2. CORRECCIÓN: Acceder a librosRes.data.libros para obtener el array
+        setLibros(librosRes.data.libros);
         setTotalPages(librosRes.data.totalPages);
 
         setCategorias(categoriasRes.data);
@@ -51,7 +55,7 @@ export default function LibroListPage({ admin = false }) {
     };
     
     loadData();
-  }, [page]);
+  }, [page]); // Recargar si la página cambia
 
   // --- LÓGICA DEL MODAL ---
 
@@ -71,7 +75,7 @@ export default function LibroListPage({ admin = false }) {
   // 3. Confirma el préstamo enviando las fechas a la API
   const confirmarPrestamo = async (e) => {
     e.preventDefault();
-    if (!fechas.fin) return alert("Selecciona una fecha de devolución");
+    if (!fechas.fin) return toast.error("Selecciona una fecha de devolución");
 
     try {
       await api.post("/prestamos", { 
@@ -80,6 +84,8 @@ export default function LibroListPage({ admin = false }) {
         fecha_devolucion: fechas.fin
       });
       toast.success("¡Libro solicitado con éxito!");
+      // Opcional: Recargar la página actual para reflejar el cambio de stock
+      // loadData(); 
       navigate("/perfil");
     } catch (error) {
       console.error("Error al pedir préstamo:", error);
@@ -273,7 +279,9 @@ export default function LibroListPage({ admin = false }) {
           </li>
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '30px' }}>
+      
+      {/* --- CONTROLES DE PAGINACIÓN (AÑADIDO) --- */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '30px', marginBottom: '30px' }}>
         <button 
           onClick={() => setPage(p => Math.max(p - 1, 1))}
           disabled={page === 1}
@@ -292,6 +300,7 @@ export default function LibroListPage({ admin = false }) {
           Siguiente ➡️
         </button>
       </div>
+      {/* --- FIN CONTROLES DE PAGINACIÓN --- */}
     </div>
   );
 }
