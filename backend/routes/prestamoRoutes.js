@@ -6,7 +6,7 @@ import {
   obtenerMisPrestamos, // <-- 1. Importar
   cambiarEstadoPrestamo
 } from "../controllers/prestamoController.js";
-import { verificarToken } from "../middleware/authMiddleware.js";
+import { verificarToken, soloBibliotecario} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
