@@ -1,3 +1,4 @@
+import { toast } from 'sonner'; // <--- 1. IMPORTAR AL INICIO
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 
@@ -58,11 +59,11 @@ export default function PerfilPage() {
       );
       
       console.log("--- FE: Estado de React actualizado. El botón debería desaparecer. ---");
-      alert("Libro devuelto con éxito");
+      toast.success("Libro devuelto con éxito");
 
     } catch (error) {
       console.error("--- FE: ❌ Error al devolver el libro ---", error.response?.data?.mensaje || error.message);
-      alert(error.response?.data?.mensaje || "No se pudo devolver el libro.");
+      toast.error(error.response?.data?.mensaje || "No se pudo devolver el libro.");
     }
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
+import { toast } from "sonner";
 
 // Aplicaremos los mismos estilos de formulario que ya definimos en App.css
 // y añadiremos algunos estilos para la lista.
@@ -35,6 +36,8 @@ export default function CategoriaPage() {
         await api.post("/categorias", { nombre });
       }
       
+      toast.success(idEditando ? "Categoría actualizada" : "Categoría creada"); // <--- Opcional: Agregar feedback de éxito
+
       // Limpiar y recargar
       setNombre("");
       setIdEditando(null);
@@ -42,7 +45,7 @@ export default function CategoriaPage() {
       
     } catch (error) {
       console.error("Error al guardar categoría", error);
-      alert("Error al guardar la categoría.");
+      toast.error("Error al guardar la categoría.");
     }
   };
 
@@ -55,7 +58,7 @@ export default function CategoriaPage() {
       cargarCategorias();
     } catch (error) {
       console.error("Error al eliminar", error);
-      alert("Error al eliminar. Asegúrate de que no esté siendo usada por ningún libro.");
+      toast.error("Error al eliminar. Asegúrate de que no esté siendo usada por ningún libro.");
     }
   };
 

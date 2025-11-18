@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 
@@ -29,11 +30,11 @@ export default function PrestamosAdminPage() {
 
     try {
       await api.put(`/prestamos/${id}/estado`, { estado: nuevoEstado });
-      alert(`Préstamo ${nuevoEstado} con éxito`);
+      toast.success(`Préstamo ${nuevoEstado} con éxito`);
       cargarPrestamos(); // Recargar la lista
     } catch (error) {
       console.error("Error al gestionar:", error);
-      alert("Hubo un error al actualizar el estado.");
+      toast.error("Hubo un error al actualizar el estado.");
     }
   };
 
