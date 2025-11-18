@@ -1,3 +1,4 @@
+import { toast } from 'sonner'; // Importar
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import "./LibroListPage.css";
@@ -9,6 +10,9 @@ export default function LibroListPage({ admin = false }) {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -35,6 +39,8 @@ export default function LibroListPage({ admin = false }) {
         ]);
         
         setLibros(librosRes.data);
+        setTotalPages(librosRes.data.totalPages);
+
         setCategorias(categoriasRes.data);
 
       } catch (err) {
@@ -45,7 +51,7 @@ export default function LibroListPage({ admin = false }) {
     };
     
     loadData();
-  }, []);
+  }, [page]);
 
   // --- LÓGICA DEL MODAL ---
 
@@ -73,11 +79,11 @@ export default function LibroListPage({ admin = false }) {
         fecha_prestamo: fechas.inicio,
         fecha_devolucion: fechas.fin
       });
-      alert("¡Libro solicitado con éxito!");
+      toast.success("¡Libro solicitado con éxito!");
       navigate("/perfil");
     } catch (error) {
       console.error("Error al pedir préstamo:", error);
-      alert(error.response?.data?.mensaje || "No se pudo solicitar el libro.");
+      toast.error(error.response?.data?.mensaje || "No se pudo solicitar el libro.");
     } finally {
       cerrarModal();
     }
@@ -97,7 +103,23 @@ export default function LibroListPage({ admin = false }) {
     return matchesSearchTerm && matchesCategory;
   });
 
-  if (loading) return <p>Cargando libros y categorías...</p>;
+  if (loading) {
+    return (
+      <div>
+        <h1>Cargando catálogo...</h1>
+        <div className="libros-grid">
+          {/* Creamos un array de 6 elementos vacíos para simular 6 tarjetas */}
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} className="skeleton-card">
+              <div className="skeleton-img"></div>
+              <div className="skeleton-text"></div>
+              <div className="skeleton-text short"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

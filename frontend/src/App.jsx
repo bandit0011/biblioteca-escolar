@@ -1,3 +1,5 @@
+import { Toaster } from 'sonner'; // <--- IMPORTAR
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -24,6 +26,7 @@ export default function App() {
 
       {/* 2. El contenido de las páginas va DENTRO del .container */}
       <div className="container">
+        <Toaster position="top-center" richColors />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/libros" element={<LibroListPage />} />
