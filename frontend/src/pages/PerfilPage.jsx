@@ -77,48 +77,52 @@ export default function PerfilPage() {
         </div>
       )}
 
-      <h2 style={{ marginTop: '30px' }}>Mis Préstamos</h2>
-      {loading && <p>Cargando tus préstamos...</p>}
-      
-      {!loading && prestamos.length === 0 && (
-        <p>Aún no has pedido ningún libro.</p>
-      )}
+      {usuario?.rol !== "bibliotecario" && (
+        <>
+          <h2 style={{ marginTop: '30px' }}>Mis Préstamos</h2>
+          {loading && <p>Cargando tus préstamos...</p>}
+          
+          {!loading && prestamos.length === 0 && (
+            <p>Aún no has pedido ningún libro.</p>
+          )}
 
-      {/* Usamos la misma clase de cuadrícula que en LibroListPage */}
-      <div className="libros-grid" style={{ marginTop: '20px' }}>
-        {prestamos.map(prestamo => (
-          <li key={prestamo.id_prestamo} className="libro-card">
-            <img 
-              src={prestamo.Libro.imagen_url || "https://i.imgur.com/sJ3CT4V.png"}
-              alt={`Portada de ${prestamo.Libro.titulo}`} 
-              className="libro-card-imagen"
-            />
-            <div className="libro-card-info">
-              <h3>{prestamo.Libro.titulo}</h3>
-              <p><strong>Autor:</strong> {prestamo.Libro.autor}</p>
-              <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
-              <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
-            </div>
-            
-            {prestamo.estado === 'pendiente' && (
-              <div className="libro-card-admin">
-                  <button 
-                    onClick={() => handleDevolver(prestamo.id_prestamo)}
-                    style={{
-                      backgroundColor: 'var(--color-danger)', 
-                      color: 'white', 
-                      border: 'none', 
-                      cursor: 'pointer',
-                      width: '100%'
-                    }}
-                  >
-                    Devolver Libro
-                  </button>
-                </div>
-            )}
-          </li>
-        ))}
-      </div>
+          <div className="libros-grid" style={{ marginTop: '20px' }}>
+            {prestamos.map(prestamo => (
+              <li key={prestamo.id_prestamo} className="libro-card">
+                {/* ... contenido de la tarjeta del libro ... */}
+                <img 
+                    src={prestamo.Libro.imagen_url || "https://i.imgur.com/sJ3CT4V.png"}
+                    alt={`Portada de ${prestamo.Libro.titulo}`} 
+                    className="libro-card-imagen"
+                  />
+                  <div className="libro-card-info">
+                    <h3>{prestamo.Libro.titulo}</h3>
+                    <p><strong>Autor:</strong> {prestamo.Libro.autor}</p>
+                    <p><strong>Fecha de Préstamo:</strong> {new Date(prestamo.fecha_prestamo).toLocaleDateString()}</p>
+                    <p><strong>Estado:</strong> <span className={`status status-${prestamo.estado}`}>{prestamo.estado}</span></p>
+                  </div>
+                  
+                  {prestamo.estado === 'pendiente' && (
+                    <div className="libro-card-admin">
+                        <button 
+                          onClick={() => handleDevolver(prestamo.id_prestamo)}
+                          style={{
+                            backgroundColor: 'var(--color-danger)', 
+                            color: 'white', 
+                            border: 'none', 
+                            cursor: 'pointer',
+                            width: '100%'
+                          }}
+                        >
+                          Devolver Libro
+                        </button>
+                      </div>
+                  )}
+              </li>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
